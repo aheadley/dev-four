@@ -1,17 +1,17 @@
 Name:           kmod-four
 Version:        
 Release:        1%{?dist}
-Summary:        
+Summary:        Linux kernel module for high throughput RFC1149.5-compliant random number generation.
 
 License:        
 URL:            
 Source0:        
 
-BuildRequires:  
+BuildRequires:  kernel-devel
 Requires:       
 
 %description
-
+Linux kernel module for high throughput RFC1149.5-compliant random number generation.
 
 %prep
 %setup -q
