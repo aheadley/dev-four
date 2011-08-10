@@ -4,11 +4,6 @@
  * shamelessly ripped from http://tldp.org/LDP/lkmpg/2.6/html/lkmpg.html#AEN569
  */
 
-#if defined(CONFIG_MODVERSIONS) && ! defined(MODVERSIONS)
-	#include <linux/modversion.h>
-	#define MODVERSIONS
-#endif
-
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/fs.h>
@@ -45,7 +40,7 @@ static struct file_operations fops = {
 
 static struct class *four_class;
 
-static int init_module(void)
+int init_module(void)
 {
         struct device *err_dev;
         Major = register_chrdev(0, DEVICE_NAME, &fops);
@@ -60,9 +55,8 @@ static int init_module(void)
         return SUCCESS;
 }
 
-static void cleanup_module(void)
+void cleanup_module(void)
 {
-        kfree(msg);
         device_destroy(four_class,MKDEV(Major,0));
         class_unregister(four_class);
         class_destroy(four_class);
