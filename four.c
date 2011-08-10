@@ -35,6 +35,8 @@ static struct file_operations fops = {
         .release = device_release
 };
 
+static struct class *four_class;
+
 int init_module(void)
 {
         struct device *err_dev;
