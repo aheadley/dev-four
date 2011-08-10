@@ -14,12 +14,10 @@ MODULE_LICENSE("GPL");
 
 #define SUCCESS     0
 #define DEVICE_NAME "four"
-#define BUF_LEN     80
 #define FOUR        4
 
 static int Major;
 static int Device_Open = 0;
-static char Four = FOUR;
 
 static struct file_operations fops = {
         .read = device_read,
@@ -80,13 +78,16 @@ static ssize_t device_read(struct file *filp,
 {
         int t_len = length;
         while (length) {
-                put_user(Four, buffer++);
+                put_user(FOUR, buffer++);
                 length--;
         }
         return t_len;
 }
 
-static ssize_t device_write(struct file *filp, const char *buff, size_t len, loff_t *off)
+static ssize_t device_write(struct file *filp,
+                            const char *buff,
+                            size_t len,
+                            loff_t *off)
 {
         return len;
 }
