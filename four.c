@@ -12,6 +12,8 @@
 #include <linux/device.h>
 #include <linux/types.h>
 
+MODULE_LICENSE("GPL");
+
 /*
  * might move this stuff to a .h later
  */
