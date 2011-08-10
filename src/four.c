@@ -88,5 +88,5 @@ static ssize_t device_read(struct file *filp,
 
 static ssize_t device_write(struct file *filp, const char *buff, size_t len, loff_t *off)
 {
-        return -EINVAL;
+        return len;
 }
