@@ -8,6 +8,11 @@
 #include <linux/kernel.h>
 #include <linux/fs.h>
 #include <asm/uaccess.h>
+#include <linux/init.h>
+#include <linux/device.h>
+#include <linux/types.h>
+
+MODULE_LICENSE("GPL");
 
 /*
  * might move this stuff to a .h later
@@ -35,13 +40,18 @@ static struct file_operations fops = {
         .release = device_release
 };
 
+static struct class *four_class;
+
 int init_module(void)
 {
+        struct device *err_dev;
         Major = register_chrdev(0, DEVICE_NAME, &fops);
         if (Major < SUCCESS) {
           printk(KERN_ALERT "Failed to register dev %s with %d\n", DEVICE_NAME, Major);
           return Major;
         } else {
+          four_class = class_create(THIS_MODULE,DEVICE_NAME);
+          err_dev = device_create(four_class, NULL, MKDEV(Major,0),NULL,DEVICE_NAME);
           printk(KERN_INFO "Registered dev %s with %d\n", DEVICE_NAME, Major);
         }
         return SUCCESS;
@@ -49,6 +59,9 @@ int init_module(void)
 
 void cleanup_module(void)
 {
+        device_destroy(four_class,MKDEV(Major,0));
+        class_unregister(four_class);
+        class_destroy(four_class);
         unregister_chrdev(Major, DEVICE_NAME);
 }
 
