@@ -4,10 +4,18 @@
  * shamelessly ripped from http://tldp.org/LDP/lkmpg/2.6/html/lkmpg.html#AEN569
  */
 
+#if defined(CONFIG_MODVERSIONS) && ! defined(MODVERSIONS)
+	#include <linux/modversion.h>
+	#define MODVERSIONS
+#endif
+
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/fs.h>
 #include <asm/uaccess.h>
+#include <linux/init.h>
+#include <linux/device.h>
+#include <linux/types.h>
 
 /*
  * might move this stuff to a .h later
@@ -37,7 +45,7 @@ static struct file_operations fops = {
 
 static struct class *four_class;
 
-int init_module(void)
+static int init_module(void)
 {
         struct device *err_dev;
         Major = register_chrdev(0, DEVICE_NAME, &fops);
@@ -45,14 +53,14 @@ int init_module(void)
           printk(KERN_ALERT "Failed to register dev %s with %d\n", DEVICE_NAME, Major);
           return Major;
         } else {
-          printk(KERN_INFO "Registered dev %s with %d\n", DEVICE_NAME, Major);
           four_class = class_create(THIS_MODULE,DEVICE_NAME);
           err_dev = device_create(four_class, NULL, MKDEV(Major,0),NULL,DEVICE_NAME);
+          printk(KERN_INFO "Registered dev %s with %d\n", DEVICE_NAME, Major);
         }
         return SUCCESS;
 }
 
-void cleanup_module(void)
+static void cleanup_module(void)
 {
         kfree(msg);
         device_destroy(four_class,MKDEV(Major,0));
